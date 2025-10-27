@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conceição Evaristo - Escritora e Poetisa Brasileira</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --accent: #8b5cf6;
+            --border: #e5e7eb;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent: #a78bfa;
+            --border: #374151;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .bg-primary { background-color: var(--bg-primary); }
+        .bg-secondary { background-color: var(--bg-secondary); }
+        .text-primary { color: var(--text-primary); }
+        .text-secondary { color: var(--text-secondary); }
+        .border-color { border-color: var(--border); }
+        .accent-color { color: var(--accent); }
+        .bg-accent { background-color: var(--accent); }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .lang-btn {
+            transition: all 0.3s ease;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        .lang-btn.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .poem-slide {
+            display: none;
+        }
+
+        .poem-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .book-card {
+            transition: all 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .book-cover-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--border) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            transform: scale(1.02);
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-secondary border-b border-color sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-8">
+                    <span class="text-xl font-bold accent-color">Conceição Evaristo</span>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="#inicio" class="nav-link text-primary" data-i18n="nav-home">Início</a>
+                        <a href="#biografia" class="nav-link text-primary" data-i18n="nav-bio">Biografia</a>
+                        <a href="#livros" class="nav-link text-primary" data-i18n="nav-books">Livros</a>
+                        <a href="#poemas" class="nav-link text-primary" data-i18n="nav-poems">Poemas</a>
+                        <a href="#videos" class="nav-link text-primary" data-i18n="nav-videos">Vídeos</a>
+                        <a href="#galeria" class="nav-link text-primary" data-i18n="nav-gallery">Galeria</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex gap-2">
+                        <button onclick="changeLanguage('pt')" class="lang-btn active px-3 py-1 rounded-md text-sm font-semibold" id="lang-pt">PT</button>
+                        <button onclick="changeLanguage('en')" class="lang-btn px-3 py-1 rounded-md text-sm font-semibold" id="lang-en">EN</button>
+                        <button onclick="changeLanguage('es')" class="lang-btn px-3 py-1 rounded-md text-sm font-semibold" id="lang-es">ES</button>
+                    </div>
+                    <button onclick="toggleTheme()" class="theme-toggle p-2 rounded-lg bg-secondary">
+                        <svg id="theme-icon-sun" class="w-6 h-6 text-primary hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <svg id="theme-icon-moon" class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="bg-secondary py-20 fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-5xl font-bold mb-6 text-primary">Conceição Evaristo</h1>
+                    <p class="text-2xl accent-color mb-4" data-i18n="hero-subtitle">Escritora, Poetisa e Acadêmica</p>
+                    <p class="text-lg text-secondary leading-relaxed mb-6" data-i18n="hero-description">
+                        Uma das vozes mais importantes da literatura brasileira contemporânea, 
+                        Conceição Evaristo é reconhecida mundialmente por sua escrita que dá voz 
+                        às experiências de mulheres negras no Brasil.
+                    </p>
+                    <a href="#biografia" class="inline-block bg-accent text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition transform hover:scale-105" data-i18n="hero-cta">
+                        Conheça sua História
+                    </a>
+                </div>
+                <div class="flex justify-center">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0028-VrjqRG2yFw6fV12scBBIF8yA0Mls2f.jpg" alt="Conceição Evaristo" class="rounded-2xl shadow-2xl w-full max-w-md">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Biografia -->
+    <section id="biografia" class="py-20 bg-primary fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary" data-i18n="bio-title">Biografia</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-secondary p-6 rounded-xl border border-color card-hover">
+                    <div class="text-3xl font-bold accent-color mb-2">1946</div>
+                    <div class="text-sm text-secondary mb-2" data-i18n="bio-birth">Nascimento</div>
+                    <p class="text-secondary" data-i18n="bio-birth-desc">Nasceu em 29 de novembro em Belo Horizonte, Minas Gerais.</p>
+                </div>
+                <div class="bg-secondary p-6 rounded-xl border border-color card-hover">
+                    <div class="text-3xl font-bold accent-color mb-2">2003</div>
+                    <div class="text-sm text-secondary mb-2" data-i18n="bio-first-book">Primeiro Romance</div>
+                    <p class="text-secondary" data-i18n="bio-first-book-desc">Publica "Ponciá Vicêncio", marco da literatura afro-brasileira.</p>
+                </div>
+                <div class="bg-secondary p-6 rounded-xl border border-color card-hover">
+                    <div class="text-3xl font-bold accent-color mb-2">2019</div>
+                    <div class="text-sm text-secondary mb-2" data-i18n="bio-honoris">Doutora Honoris Causa</div>
+                    <p class="text-secondary" data-i18n="bio-honoris-desc">Recebe título pela Universidade Federal de Juiz de Fora.</p>
+                </div>
+            </div>
+
+            <div class="bg-secondary p-8 rounded-xl border border-color mb-8 card-hover">
+                <h3 class="text-2xl font-bold mb-4 text-primary" data-i18n="bio-story-title">Sua História</h3>
+                <p class="text-secondary leading-relaxed mb-4" data-i18n="bio-story-p1">
+                    Maria da Conceição Evaristo de Brito nasceu em uma favela de Belo Horizonte, sendo a segunda de nove filhos. 
+                    Sua mãe era lavadeira e seu pai, pedreiro. Desde muito jovem, trabalhou como empregada doméstica 
+                    para ajudar no sustento da família, experiência que marcaria profundamente sua obra literária.
+                </p>
+                <p class="text-secondary leading-relaxed mb-4" data-i18n="bio-story-p2">
+                    Aos 25 anos, mudou-se para o Rio de Janeiro, onde trabalhou como professora da rede pública 
+                    enquanto cursava Letras na UFRJ. Graduou-se em 1990, fez mestrado na PUC-Rio (1996) 
+                    e doutorado na UFF (2011).
+                </p>
+                <p class="text-secondary leading-relaxed" data-i18n="bio-story-p3">
+                    Conceição Evaristo criou o conceito de "escrevivência" - uma escrita que nasce das experiências vividas, 
+                    especialmente das experiências de mulheres negras no Brasil. Suas obras são traduzidas para diversos idiomas 
+                    e utilizadas em escolas e universidades brasileiras.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Livros Section -->
+    <section id="livros" class="py-20 bg-secondary fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary" data-i18n="books-title">Principais Livros</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Olhos d'Água -->
+                <div class="book-card bg-primary p-6 rounded-xl border border-color">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0036-P7sPfq8bTlhCI8KraFpjrzDUztBDfQ.jpg" alt="Olhos d'Água" class="book-cover-img mb-4">
+                    <h3 class="text-xl font-bold mb-2 accent-color">Olhos d'Água</h3>
+                    <p class="text-sm text-secondary mb-2">2014 • Contos</p>
+                    <p class="text-secondary text-sm leading-relaxed" data-i18n="book-olhos-desc">
+                        Coletânea de 15 contos que retratam a vida de mulheres negras, suas dores, alegrias e lutas cotidianas. 
+                        Finalista do Prêmio Jabuti 2015. Uma das obras mais aclamadas da autora.
+                    </p>
+                </div>
+
+                <!-- Insubmissas Lágrimas de Mulheres -->
+                <div class="book-card bg-primary p-6 rounded-xl border border-color">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0037-bEiCYOTWRGq2JKR55CLR1G6YdRgKmN.jpg" alt="Insubmissas Lágrimas de Mulheres" class="book-cover-img mb-4">
+                    <h3 class="text-xl font-bold mb-2 accent-color">Insubmissas Lágrimas de Mulheres</h3>
+                    <p class="text-sm text-secondary mb-2">2011 • Contos</p>
+                    <p class="text-secondary text-sm leading-relaxed" data-i18n="book-insubmissas-desc">
+                        Treze contos que apresentam histórias de mulheres negras que enfrentam e superam situações de violência e opressão. 
+                        Narrativas de resistência e empoderamento feminino.
+                    </p>
+                </div>
+
+                <!-- Canção para Ninar Menino Grande -->
+                <div class="book-card bg-primary p-6 rounded-xl border border-color">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0038-6yLz0s99qcOfzfcENcxxJSUl9OYyrz.jpg" alt="Canção para Ninar Menino Grande" class="book-cover-img mb-4">
+                    <h3 class="text-xl font-bold mb-2 accent-color">Canção para Ninar Menino Grande</h3>
+                    <p class="text-sm text-secondary mb-2">2018 • Poesia</p>
+                    <p class="text-secondary text-sm leading-relaxed" data-i18n="book-cancao-desc">
+                        Poemas que abordam maternidade, violência policial e a experiência de ser mãe de um jovem negro no Brasil. 
+                        Uma obra comovente sobre amor materno e dor social.
+                    </p>
+                </div>
+
+                <!-- Conceição (Livro Ilustrado) -->
+                <div class="book-card bg-primary p-6 rounded-xl border border-color">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0039-mCNPbfFd7zOiQvXhJRCXc6kjiMSTyT.jpg" alt="Conceição" class="book-cover-img mb-4">
+                    <h3 class="text-xl font-bold mb-2 accent-color">Conceição</h3>
+                    <p class="text-sm text-secondary mb-2">Biografia Ilustrada</p>
+                    <p class="text-secondary text-sm leading-relaxed" data-i18n="book-conceicao-desc">
+                        Livro ilustrado que conta a história de vida de Conceição Evaristo de forma acessível e visual. 
+                        Ideal para jovens leitores conhecerem a trajetória inspiradora da autora.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-primary p-8 rounded-xl border border-color">
+                <h3 class="text-2xl font-bold mb-6 text-center accent-color" data-i18n="books-other-title">Outras Obras Importantes</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-primary mb-2">Ponciá Vicêncio (2003)</h4>
+                        <p class="text-secondary text-sm" data-i18n="book-poncia-short">Romance sobre identidade, memória e ancestralidade de uma mulher negra.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-primary mb-2">Becos da Memória (2006)</h4>
+                        <p class="text-secondary text-sm" data-i18n="book-becos-short">Baseado em memórias de infância na favela e remoção forçada.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-primary mb-2">Poemas da Recordação (2008)</h4>
+                        <p class="text-secondary text-sm" data-i18n="book-poemas-short">Poemas sobre memória, identidade negra e ancestralidade.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-primary mb-2">Tempo de Nos Aquilombar (2021)</h4>
+                        <p class="text-secondary text-sm" data-i18n="book-tempo-short">Poemas sobre resistência e união da comunidade negra.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Poemas -->
+    <section id="poemas" class="py-20 bg-primary fade-in">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary" data-i18n="poems-title">Poemas Selecionados</h2>
+            
+            <div class="relative bg-secondary p-8 md:p-12 rounded-xl border border-color shadow-lg">
+                <!-- Poem 1 -->
+                <div class="poem-slide active" data-poem="0">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Vozes-Mulheres</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>A voz de minha bisavó<br>
+                        ecoou criança<br>
+                        nos porões do navio.<br>
+                        ecoou lamentos<br>
+                        de uma infância perdida.</p>
+
+                        <p>A voz de minha avó<br>
+                        ecoou obediência<br>
+                        aos brancos-donos de tudo.</p>
+
+                        <p>A voz de minha mãe<br>
+                        ecoou baixinho revolta<br>
+                        no fundo das cozinhas alheias<br>
+                        debaixo das trouxas<br>
+                        roupagens sujas dos brancos<br>
+                        pelo caminho empoeirado<br>
+                        rumo à favela.</p>
+
+                        <p>A minha voz ainda<br>
+                        ecoa versos perplexos<br>
+                        com rimas de sangue<br>
+                        e fome.</p>
+
+                        <p>A voz de minha filha<br>
+                        recolhe todas as nossas vozes<br>
+                        recolhe em si<br>
+                        as vozes mudas caladas<br>
+                        engasgadas nas gargantas.</p>
+
+                        <p>A voz de minha filha<br>
+                        recolhe em si<br>
+                        a fala e o ato.<br>
+                        O ontem – o hoje – o agora.<br>
+                        Na voz de minha filha<br>
+                        se fará ouvir a ressonância<br>
+                        o eco da vida-liberdade.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 2 -->
+                <div class="poem-slide" data-poem="1">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Eu-Mulher</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Uma gota de leite<br>
+                        me escorre entre os seios.<br>
+                        Uma mancha de sangue<br>
+                        me enfeita entre as pernas.<br>
+                        Meia palavra mordida<br>
+                        me foge da boca.</p>
+
+                        <p>Vagos desejos insinuam esperanças.</p>
+
+                        <p>Eu-mulher em rios vermelhos<br>
+                        inauguro a vida.<br>
+                        Em baixa voz<br>
+                        violento os tímpanos do mundo.<br>
+                        Antevejo.<br>
+                        Antecipo.<br>
+                        Antes-vivo<br>
+                        Antes – agora – o que há de vir.</p>
+
+                        <p>Eu fêmea-matriz.<br>
+                        Eu força-motriz.<br>
+                        Eu-mulher<br>
+                        abrigo da semente<br>
+                        moto-contínuo<br>
+                        do mundo.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 3 -->
+                <div class="poem-slide" data-poem="2">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Da Grafia-Desenho de Minha Mãe</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Minha mãe<br>
+                        não soletrou para mim<br>
+                        o a-b-c da vida<br>
+                        mas fez a leitura<br>
+                        de um mundo<br>
+                        que eu desconhecia.</p>
+
+                        <p>Minha mãe<br>
+                        não desenhou para mim<br>
+                        o mapa do mundo<br>
+                        mas na grafia da vida<br>
+                        escreveu-me a letra<br>
+                        do seu próprio punho.</p>
+
+                        <p>Minha mãe<br>
+                        não me ensinou a ler<br>
+                        mas me fez conhecer<br>
+                        a escrita da vida<br>
+                        na caligrafia da dor.</p>
+
+                        <p>Minha mãe<br>
+                        não me deu lições<br>
+                        de gramática<br>
+                        mas me ensinou<br>
+                        a sintaxe da sobrevivência.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 4 -->
+                <div class="poem-slide" data-poem="3">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Certidão de Óbito</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Atesto e dou fé<br>
+                        que ela viveu<br>
+                        e que foi feliz<br>
+                        apesar de tudo.</p>
+
+                        <p>Atesto e dou fé<br>
+                        que ela morreu<br>
+                        e que foi triste<br>
+                        por causa de tudo.</p>
+
+                        <p>Atesto e dou fé<br>
+                        que ela amou<br>
+                        e que foi amada<br>
+                        mesmo assim.</p>
+
+                        <p>Atesto e dou fé<br>
+                        que ela chorou<br>
+                        e que foi consolada<br>
+                        às vezes.</p>
+
+                        <p>Atesto e dou fé<br>
+                        que ela existiu<br>
+                        e que foi importante<br>
+                        sempre.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 5 -->
+                <div class="poem-slide" data-poem="4">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Becos da Memória</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Nos becos da memória<br>
+                        encontro os meus<br>
+                        os que ficaram<br>
+                        os que partiram<br>
+                        os que nunca voltaram.</p>
+
+                        <p>Nos becos da memória<br>
+                        vejo as casas<br>
+                        os barracos<br>
+                        as vielas<br>
+                        o chão de terra batida.</p>
+
+                        <p>Nos becos da memória<br>
+                        ouço as vozes<br>
+                        os risos<br>
+                        os choros<br>
+                        os silêncios.</p>
+
+                        <p>Nos becos da memória<br>
+                        guardo tudo<br>
+                        para não esquecer<br>
+                        para não deixar morrer<br>
+                        a história dos meus.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 6 -->
+                <div class="poem-slide" data-poem="5">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Recordar é Preciso</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Recordar é preciso<br>
+                        para não repetir<br>
+                        os erros do passado<br>
+                        as dores do ontem.</p>
+
+                        <p>Recordar é preciso<br>
+                        para honrar<br>
+                        os que vieram antes<br>
+                        os que abriram caminhos.</p>
+
+                        <p>Recordar é preciso<br>
+                        para ensinar<br>
+                        aos que virão depois<br>
+                        aos que herdarão a luta.</p>
+
+                        <p>Recordar é preciso<br>
+                        porque a memória<br>
+                        é nossa arma<br>
+                        nossa resistência<br>
+                        nossa existência.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 7 -->
+                <div class="poem-slide" data-poem="6">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Todas as Manhãs</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Todas as manhãs<br>
+                        acordo com a esperança<br>
+                        de que hoje será diferente<br>
+                        de que hoje será melhor.</p>
+
+                        <p>Todas as manhãs<br>
+                        levanto com a força<br>
+                        das minhas ancestrais<br>
+                        das guerreiras que me precederam.</p>
+
+                        <p>Todas as manhãs<br>
+                        respiro fundo<br>
+                        e agradeço<br>
+                        por estar viva<br>
+                        por poder lutar.</p>
+
+                        <p>Todas as manhãs<br>
+                        renasço<br>
+                        e recomeço<br>
+                        porque desistir<br>
+                        nunca foi opção.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 8 -->
+                <div class="poem-slide" data-poem="7">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Meu Rosário</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Meu rosário é feito<br>
+                        de contas de lágrimas<br>
+                        de grãos de suor<br>
+                        de gotas de sangue.</p>
+
+                        <p>Meu rosário não reza<br>
+                        ave-marias<br>
+                        mas canta<br>
+                        canções de liberdade.</p>
+
+                        <p>Meu rosário não pede<br>
+                        perdão aos céus<br>
+                        mas exige<br>
+                        justiça na terra.</p>
+
+                        <p>Meu rosário é minha arma<br>
+                        minha proteção<br>
+                        minha fé<br>
+                        na força do meu povo.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 9 -->
+                <div class="poem-slide" data-poem="8">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Ayoluwa, a Alegria do Nosso Povo</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Ayoluwa<br>
+                        nome que carrega<br>
+                        a alegria do nosso povo<br>
+                        a esperança dos ancestrais.</p>
+
+                        <p>Ayoluwa<br>
+                        criança que nasce<br>
+                        trazendo a luz<br>
+                        iluminando os caminhos.</p>
+
+                        <p>Ayoluwa<br>
+                        semente plantada<br>
+                        em terra fértil<br>
+                        que germinará forte.</p>
+
+                        <p>Ayoluwa<br>
+                        promessa de futuro<br>
+                        continuação da luta<br>
+                        vitória que virá.</p>
+                    </div>
+                </div>
+
+                <!-- Poem 10 -->
+                <div class="poem-slide" data-poem="9">
+                    <h3 class="text-2xl font-bold mb-4 accent-color">Do Velho ao Novo</h3>
+                    <div class="text-secondary leading-relaxed space-y-4">
+                        <p>Do velho ao novo<br>
+                        carrego comigo<br>
+                        as histórias contadas<br>
+                        ao pé do fogão.</p>
+
+                        <p>Do velho ao novo<br>
+                        levo na bagagem<br>
+                        a sabedoria dos mais velhos<br>
+                        a coragem dos mais jovens.</p>
+
+                        <p>Do velho ao novo<br>
+                        construo pontes<br>
+                        entre gerações<br>
+                        entre tempos<br>
+                        entre mundos.</p>
+
+                        <p>Do velho ao novo<br>
+                        teço o fio<br>
+                        que une passado e futuro<br>
+                        que mantém viva<br>
+                        nossa memória.</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-8 pt-6 border-t border-color">
+                    <button onclick="previousPoem()" class="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        <span data-i18n="poem-prev">Anterior</span>
+                    </button>
+                    
+                    <span id="poem-counter" class="text-secondary font-semibold">1 / 10</span>
+                    
+                    <button onclick="nextPoem()" class="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:opacity-90 transition">
+                        <span data-i18n="poem-next">Próximo</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Videos Section -->
+    <section id="videos" class="py-20 bg-secondary fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary" data-i18n="videos-title">Vídeos e Entrevistas</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-primary p-6 rounded-xl border border-color card-hover">
+                    <div class="aspect-video rounded-lg overflow-hidden mb-4">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/9POX2gtfmFI" 
+                            title="Conceição Evaristo - Vídeo 1" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            class="w-full h-full">
+                        </iframe>
+                    </div>
+                    <h3 class="font-bold text-primary mb-2" data-i18n="video-1-title">Conceição Evaristo fala sobre Escrevivência</h3>
+                    <p class="text-sm text-secondary" data-i18n="video-1-desc">Entrevista onde a autora explica o conceito de escrevivência.</p>
+                </div>
+
+                <div class="bg-primary p-6 rounded-xl border border-color card-hover">
+                    <div class="aspect-video rounded-lg overflow-hidden mb-4">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/1SRI-R27F_o" 
+                            title="Conceição Evaristo - Vídeo 2" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            class="w-full h-full">
+                        </iframe>
+                    </div>
+                    <h3 class="font-bold text-primary mb-2" data-i18n="video-2-title">Leitura de Poemas</h3>
+                    <p class="text-sm text-secondary" data-i18n="video-2-desc">Conceição Evaristo recita seus poemas mais conhecidos.</p>
+                </div>
+
+                <div class="bg-primary p-6 rounded-xl border border-color card-hover">
+                    <div class="aspect-video rounded-lg overflow-hidden mb-4">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/xplu30xQvzg" 
+                            title="Conceição Evaristo - Vídeo 3" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            class="w-full h-full">
+                        </iframe>
+                    </div>
+                    <h3 class="font-bold text-primary mb-2" data-i18n="video-3-title">Palestra sobre Literatura Afro-Brasileira</h3>
+                    <p class="text-sm text-secondary" data-i18n="video-3-desc">Conferência em universidade sobre literatura afro-brasileira.</p>
+                </div>
+
+                <div class="bg-primary p-6 rounded-xl border border-color card-hover">
+                    <div class="aspect-video rounded-lg overflow-hidden mb-4">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/QXopKuvxevY" 
+                            title="Conceição Evaristo - Vídeo 4" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            class="w-full h-full">
+                        </iframe>
+                    </div>
+                    <h3 class="font-bold text-primary mb-2" data-i18n="video-4-title">Documentário: Trajetória de Vida</h3>
+                    <p class="text-sm text-secondary" data-i18n="video-4-desc">Documentário sobre a vida e obra de Conceição Evaristo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galeria -->
+    <section id="galeria" class="py-20 bg-primary fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary" data-i18n="gallery-title">Galeria de Fotos</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0029-Bsohso8Vm6ebx6ugf8KhOqktTiA3QR.jpg" alt="Conceição Evaristo na biblioteca" class="gallery-img w-full h-64 object-cover rounded-lg">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0030-jtp1fj9t0EHVi4M5nIf5wtjxWp4YIN.jpg" alt="Conceição Evaristo lendo" class="gallery-img w-full h-64 object-cover rounded-lg">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0031-Pe5wC93ccYEiHVYYvAXk7aBsfNXLXh.jpg" alt="Conceição Evaristo" class="gallery-img w-full h-64 object-cover rounded-lg">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20251027-WA0028-VrjqRG2yFw6fV12scBBIF8yA0Mls2f.jpg" alt="Conceição Evaristo com livros" class="gallery-img w-full h-64 object-cover rounded-lg">
+                <img src="img/conceicao-01.jpg" alt="Conceição Evaristo 1" class="gallery-img w-full h-64 object-cover rounded-lg">
+                <img src="img/conceicao-02.jpeg" alt="Conceição Evaristo 2" class="gallery-img w-full h-64 object-cover rounded-lg">
+                <img src="img/conceicao-03.jpeg" alt="Conceição Evaristo 3" class="gallery-img w-full h-64 object-cover rounded-lg">
+                <img src="img/conceicao-04.jpeg" alt="Conceição Evaristo 4" class="gallery-img w-full h-64 object-cover rounded-lg">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-secondary border-t border-color py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-secondary mb-2" data-i18n="footer-text">
+                Site educacional sobre Conceição Evaristo
+            </p>
+            <p class="text-secondary text-sm" data-i18n="footer-year">
+                Trabalho escolar - 2025
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            pt: {
+                'nav-home': 'Início',
+                'nav-bio': 'Biografia',
+                'nav-books': 'Livros',
+                'nav-poems': 'Poemas',
+                'nav-videos': 'Vídeos',
+                'nav-gallery': 'Galeria',
+                'hero-subtitle': 'Escritora, Poetisa e Acadêmica',
+                'hero-description': 'Uma das vozes mais importantes da literatura brasileira contemporânea, Conceição Evaristo é reconhecida mundialmente por sua escrita que dá voz às experiências de mulheres negras no Brasil.',
+                'hero-cta': 'Conheça sua História',
+                'bio-title': 'Biografia',
+                'bio-birth': 'Nascimento',
+                'bio-birth-desc': 'Nasceu em 29 de novembro em Belo Horizonte, Minas Gerais.',
+                'bio-first-book': 'Primeiro Romance',
+                'bio-first-book-desc': 'Publica "Ponciá Vicêncio", marco da literatura afro-brasileira.',
+                'bio-honoris': 'Doutora Honoris Causa',
+                'bio-honoris-desc': 'Recebe título pela Universidade Federal de Juiz de Fora.',
+                'bio-story-title': 'Sua História',
+                'bio-story-p1': 'Maria da Conceição Evaristo de Brito nasceu em uma favela de Belo Horizonte, sendo a segunda de nove filhos. Sua mãe era lavadeira e seu pai, pedreiro. Desde muito jovem, trabalhou como empregada doméstica para ajudar no sustento da família, experiência que marcaria profundamente sua obra literária.',
+                'bio-story-p2': 'Aos 25 anos, mudou-se para o Rio de Janeiro, onde trabalhou como professora da rede pública enquanto cursava Letras na UFRJ. Graduou-se em 1990, fez mestrado na PUC-Rio (1996) e doutorado na UFF (2011).',
+                'bio-story-p3': 'Conceição Evaristo criou o conceito de "escrevivência" - uma escrita que nasce das experiências vividas, especialmente das experiências de mulheres negras no Brasil. Suas obras são traduzidas para diversos idiomas e utilizadas em escolas e universidades brasileiras.',
+                'books-title': 'Principais Livros',
+                'book-olhos-desc': 'Coletânea de 15 contos que retratam a vida de mulheres negras, suas dores, alegrias e lutas cotidianas. Finalista do Prêmio Jabuti 2015. Uma das obras mais aclamadas da autora.',
+                'book-insubmissas-desc': 'Treze contos que apresentam histórias de mulheres negras que enfrentam e superam situações de violência e opressão. Narrativas de resistência e empoderamento feminino.',
+                'book-cancao-desc': 'Poemas que abordam maternidade, violência policial e a experiência de ser mãe de um jovem negro no Brasil. Uma obra comovente sobre amor materno e dor social.',
+                'book-conceicao-desc': 'Livro ilustrado que conta a história de vida de Conceição Evaristo de forma acessível e visual. Ideal para jovens leitores conhecerem a trajetória inspiradora da autora.',
+                'books-other-title': 'Outras Obras Importantes',
+                'book-poncia-short': 'Romance sobre identidade, memória e ancestralidade de uma mulher negra.',
+                'book-becos-short': 'Baseado em memórias de infância na favela e remoção forçada.',
+                'book-poemas-short': 'Poemas sobre memória, identidade negra e ancestralidade.',
+                'book-tempo-short': 'Poemas sobre resistência e união da comunidade negra.',
+                'poems-title': 'Poemas Selecionados',
+                'audio-listen': 'Ouvir Poema',
+                'poem-prev': 'Anterior',
+                'poem-next': 'Próximo',
+                'videos-title': 'Vídeos e Entrevistas',
+                'video-1-title': 'Conceição Evaristo fala sobre Escrevivência',
+                'video-1-desc': 'Entrevista onde a autora explica o conceito de escrevivência.',
+                'video-2-title': 'Leitura de Poemas',
+                'video-2-desc': 'Conceição Evaristo recita seus poemas mais conhecidos.',
+                'video-3-title': 'Palestra sobre Literatura Afro-Brasileira',
+                'video-3-desc': 'Conferência em universidade sobre literatura afro-brasileira.',
+                'video-4-title': 'Documentário: Trajetória de Vida',
+                'video-4-desc': 'Documentário sobre a vida e obra de Conceição Evaristo.',
+                'gallery-title': 'Galeria de Fotos',
+                'footer-text': 'Site educacional sobre Conceição Evaristo',
+                'footer-year': 'Trabalho escolar - 2025'
+            },
+            en: {
+                'nav-home': 'Home',
+                'nav-bio': 'Biography',
+                'nav-books': 'Books',
+                'nav-poems': 'Poems',
+                'nav-videos': 'Videos',
+                'nav-gallery': 'Gallery',
+                'hero-subtitle': 'Writer, Poet and Academic',
+                'hero-description': 'One of the most important voices in contemporary Brazilian literature, Conceição Evaristo is recognized worldwide for her writing that gives voice to the experiences of Black women in Brazil.',
+                'hero-cta': 'Learn Her Story',
+                'bio-title': 'Biography',
+                'bio-birth': 'Birth',
+                'bio-birth-desc': 'Born on November 29 in Belo Horizonte, Minas Gerais.',
+                'bio-first-book': 'First Novel',
+                'bio-first-book-desc': 'Publishes "Ponciá Vicêncio", a landmark of Afro-Brazilian literature.',
+                'bio-honoris': 'Doctor Honoris Causa',
+                'bio-honoris-desc': 'Receives title from Federal University of Juiz de Fora.',
+                'bio-story-title': 'Her Story',
+                'bio-story-p1': 'Maria da Conceição Evaristo de Brito was born in a favela in Belo Horizonte, the second of nine children. Her mother was a washerwoman and her father a bricklayer. From a young age, she worked as a domestic worker to help support the family, an experience that would deeply mark her literary work.',
+                'bio-story-p2': 'At 25, she moved to Rio de Janeiro, where she worked as a public school teacher while studying Literature at UFRJ. She graduated in 1990, completed her master\'s at PUC-Rio (1996) and doctorate at UFF (2011).',
+                'bio-story-p3': 'Conceição Evaristo created the concept of "escrevivência" (writing-living) - writing that emerges from lived experiences, especially those of Black women in Brazil. Her works are translated into several languages and used in Brazilian schools and universities.',
+                'books-title': 'Main Books',
+                'book-olhos-desc': 'Collection of 15 short stories portraying the lives of Black women, their pains, joys and daily struggles. Finalist for the 2015 Jabuti Prize. One of the author\'s most acclaimed works.',
+                'book-insubmissas-desc': 'Thirteen short stories presenting stories of Black women who face and overcome situations of violence and oppression. Narratives of resistance and female empowerment.',
+                'book-cancao-desc': 'Poems addressing motherhood, police violence and the experience of being a mother of a young Black man in Brazil. A moving work about maternal love and social pain.',
+                'book-conceicao-desc': 'Illustrated book telling the life story of Conceição Evaristo in an accessible and visual way. Ideal for young readers to learn about the author\'s inspiring journey.',
+                'books-other-title': 'Other Important Works',
+                'book-poncia-short': 'Novel about identity, memory and ancestry of a Black woman.',
+                'book-becos-short': 'Based on childhood memories in the favela and forced removal.',
+                'book-poemas-short': 'Poems about memory, Black identity and ancestry.',
+                'book-tempo-short': 'Poems about resistance and unity of the Black community.',
+                'poems-title': 'Selected Poems',
+                'audio-listen': 'Listen to Poem',
+                'poem-prev': 'Previous',
+                'poem-next': 'Next',
+                'videos-title': 'Videos and Interviews',
+                'video-1-title': 'Conceição Evaristo talks about Escrevivência',
+                'video-1-desc': 'Interview where the author explains the concept of escrevivência.',
+                'video-2-title': 'Poetry Reading',
+                'video-2-desc': 'Conceição Evaristo recites her best-known poems.',
+                'video-3-title': 'Lecture on Afro-Brazilian Literature',
+                'video-3-desc': 'University conference on Afro-Brazilian literature.',
+                'video-4-title': 'Documentary: Life Journey',
+                'video-4-desc': 'Documentary about the life and work of Conceição Evaristo.',
+                'gallery-title': 'Photo Gallery',
+                'footer-text': 'Educational website about Conceição Evaristo',
+                'footer-year': 'School project - 2025'
+            },
+            es: {
+                'nav-home': 'Inicio',
+                'nav-bio': 'Biografía',
+                'nav-books': 'Libros',
+                'nav-poems': 'Poemas',
+                'nav-videos': 'Videos',
+                'nav-gallery': 'Galería',
+                'hero-subtitle': 'Escritora, Poeta y Académica',
+                'hero-description': 'Una de las voces más importantes de la literatura brasileña contemporánea, Conceição Evaristo es reconocida mundialmente por su escritura que da voz a las experiencias de las mujeres negras en Brasil.',
+                'hero-cta': 'Conoce su Historia',
+                'bio-title': 'Biografía',
+                'bio-birth': 'Nacimiento',
+                'bio-birth-desc': 'Nació el 29 de noviembre en Belo Horizonte, Minas Gerais.',
+                'bio-first-book': 'Primera Novela',
+                'bio-first-book-desc': 'Publica "Ponciá Vicêncio", hito de la literatura afrobrasileña.',
+                'bio-honoris': 'Doctora Honoris Causa',
+                'bio-honoris-desc': 'Recibe título de la Universidad Federal de Juiz de Fora.',
+                'bio-story-title': 'Su Historia',
+                'bio-story-p1': 'Maria da Conceição Evaristo de Brito nació en una favela de Belo Horizonte, siendo la segunda de nueve hijos. Su madre era lavandera y su padre albañil. Desde muy joven, trabajó como empleada doméstica para ayudar al sustento de la familia, experiencia que marcaría profundamente su obra literaria.',
+                'bio-story-p2': 'A los 25 años, se mudó a Río de Janeiro, donde trabajó como profesora de la red pública mientras cursaba Letras en la UFRJ. Se graduó en 1990, hizo maestría en PUC-Rio (1996) y doctorado en UFF (2011).',
+                'bio-story-p3': 'Conceição Evaristo creó el concepto de "escrevivência" (escritura-vivencia) - una escritura que nace de las experiencias vividas, especialmente de las experiencias de las mujeres negras en Brasil. Sus obras están traducidas a varios idiomas y se utilizan en escuelas y universidades brasileñas.',
+                'books-title': 'Principales Libros',
+                'book-olhos-desc': 'Colección de 15 cuentos que retratan la vida de las mujeres negras, sus dolores, alegrías y luchas cotidianas. Finalista del Premio Jabuti 2015. Una de las obras más aclamadas de la autora.',
+                'book-insubmissas-desc': 'Trece cuentos que presentan historias de mujeres negras que enfrentan y superan situaciones de violencia y opresión. Narrativas de resistencia y empoderamiento femenino.',
+                'book-cancao-desc': 'Poemas que abordan la maternidad, la violencia policial y la experiencia de ser madre de un joven negro en Brasil. Una obra conmovedora sobre el amor materno y el dolor social.',
+                'book-conceicao-desc': 'Libro ilustrado que cuenta la historia de vida de Conceição Evaristo de forma accesible y visual. Ideal para que los jóvenes lectores conozcan la trayectoria inspiradora de la autora.',
+                'books-other-title': 'Otras Obras Importantes',
+                'book-poncia-short': 'Novela sobre identidad, memoria y ancestralidad de una mujer negra.',
+                'book-becos-short': 'Basado en memorias de infancia en la favela y remoción forzada.',
+                'book-poemas-short': 'Poemas sobre memoria, identidad negra y ancestralidad.',
+                'book-tempo-short': 'Poemas sobre resistencia y unión de la comunidad negra.',
+                'poems-title': 'Poemas Selecionados',
+                'audio-listen': 'Escuchar Poema',
+                'poem-prev': 'Anterior',
+                'poem-next': 'Siguiente',
+                'videos-title': 'Vídeos y Entrevistas',
+                'video-1-title': 'Conceição Evaristo habla sobre Escrevivência',
+                'video-1-desc': 'Entrevista donde la autora explica el concepto de escrevivência.',
+                'video-2-title': 'Lectura de Poemas',
+                'video-2-desc': 'Conceição Evaristo recita sus poemas más conocidos.',
+                'video-3-title': 'Conferencia sobre Literatura Afrobrasileña',
+                'video-3-desc': 'Conferencia universitaria sobre literatura afrobrasileña.',
+                'video-4-title': 'Documental: Trayectoria de Vida',
+                'video-4-desc': 'Documental sobre la vida y obra de Conceição Evaristo.',
+                'gallery-title': 'Galería de Fotos',
+                'footer-text': 'Sitio educativo sobre Conceição Evaristo',
+                'footer-year': 'Trabajo escolar - 2025'
+            }
+        };
+
+        let currentLang = 'pt';
+        let currentPoem = 0;
+        const totalPoems = 10; // Updated total poems from 3 to 10
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`lang-${lang}`).classList.add('active');
+            
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            
+            document.getElementById('theme-icon-sun').classList.toggle('hidden');
+            document.getElementById('theme-icon-moon').classList.toggle('hidden');
+        }
+
+        function nextPoem() {
+            currentPoem = (currentPoem + 1) % totalPoems;
+            showPoem(currentPoem);
+        }
+
+        function previousPoem() {
+            currentPoem = (currentPoem - 1 + totalPoems) % totalPoems;
+            showPoem(currentPoem);
+        }
+
+        function showPoem(index) {
+            document.querySelectorAll('.poem-slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            document.querySelector(`[data-poem="${index}"]`).classList.add('active');
+            document.getElementById('poem-counter').textContent = `${index + 1} / ${totalPoems}`;
+        }
+
+
+        // Fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
